@@ -1,0 +1,26 @@
+{
+  "goods":{
+    "status":"0",
+    "msg":"",
+    "result":[
+      {
+        "productId":"100001",
+        "productName":"小米7",
+        "productPrice":323,
+        "productImg":"https://pic2.zhimg.com/80/v2-3cbc4aaac42f11bc13c4122c1ed792f5_hd.jpg"
+      },
+      {
+        "productId":"100001",
+        "productName":"小米超人",
+        "productPrice":1411,
+        "productImg":"https://pic2.zhimg.com/80/v2-3cbc4aaac42f11bc13c4122c1ed792f5_hd.jpg"
+      },
+      {
+        "productId":"100001",
+        "productName":"小人7",
+        "productPrice":2459,
+        "productImg":"https://pic2.zhimg.com/80/v2-3cbc4aaac42f11bc13c4122c1ed792f5_hd.jpg"
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <script src="../node_modules/axios/dist/axios.js"></script>
+  <script src="../node_modules/vue-axios/dist/vue-axios.min.js"></script>
+</head>
+<body>
+  <div id="app" class="container">
+    <h1>axios</h1>
+    <a href="javascript:;" class="btn btn-primary" @click="get">get</a>
+    <a href="javascript:;" class="btn btn-primary" @click="post">post</a>
+    <a href="javascript:;" class="btn btn-primary" @click="http">e</a>
+    <div>
+      <span>{{msg}}</span>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el:"#app",
+      data:{
+        msg: ''
+      },
+      mounted: function () {
+        // 全局拦截 --
+        // 1.axios.interceptors.request.use
+        // 在请求之前先执行此api
+        axios.interceptors.request.use(function (config) {
+          console.log("request init.")
+          return config;
+        })
+        // axios.interceptors.response.use
+        // 请求后，获取数据前，执行此api
+        axios.interceptors.response.use(function (response){
+          console.log("response init.")
+          return response;
+        })
+      },
+      methods: {
+        // 全局请求
+        get: function () {
+          axios.get("../package.json", {
+            params:{
+              userID:"999"
+            },
+            headers:{
+              token:"qirito"
+            },
+            before: function () {
+              console.log('before init :');
+            }
+          }).then(res =>{
+            this.msg = res.data;
+          }).catch( function (error) {
+            console.log('error init :' +error);
+          }
+
+          )
+        },
+        post: function () {
+          axios.post("../package.json",{
+            userId:"99"
+          },{
+            headers:{
+              token:"qirito"
+            }
+          }).then(res =>{
+            this.msg = res.data;
+          })
+        },
+        http: function () {
+          axios({
+            url:"../package.json",
+            method:"get",
+            data:{
+              userId:"101"
+            },
+            params:{
+              userId:"102"
+            },
+            headers:{
+              token:"http-test"
+            }
+          }).then(res=>{
+            this.msg = res.data;
+          })
+        }
+      }
+    })
+  
+  </script>
+</body>
+</html>

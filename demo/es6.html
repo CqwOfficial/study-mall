@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ES6-demo</title>
+</head>
+<body>
+  <h2>ES6</h2>
+  <script>
+    function sum(x, y, z) {
+      let total = 0;
+      if(x)total+=x;
+      if(y)total+=y;
+      if(z)total+=z;
+
+      console.log(`total: ${total}`);
+    }
+    
+    sum(5,"",9)
+
+    function sum2(...m){ 
+      // "..." 在形参位置时，叫做rest参数 代表着我不知道该函数在被调用时会放进多少实参
+      // 在函数内部，可以用一个循环去遍历...所带的参数名(功能接近arg数组)来获取确切的参数值。
+      let total = 0;
+      for(var i of m){
+        // var ？ of ？ 是es6简写for循环条件的方式
+        // for of与for in 的区别 =》https://blog.csdn.net/w390058785/article/details/80522383
+        total += i;
+      }
+      console.log(`total: ${total}`)
+    }
+
+    sum2(4,2,3)
+
+    let sum3 = (...m) =>item+1; // 如果es6函数只有一句代码，则直接在右侧写；
+
+    let sum3p2 = (...m) => {
+      let total = 0;
+      for(var i of m)total += i;
+      console.log(`total: ${total}`)
+    }
+    sum3p2(2,4,5)
+
+    var [x,y] = [4,8];
+
+    console.log(...[4,8]); // 数组扩展 !输出时并不是数组形势，而是解构输出
+
+    let arr1 = [1,3];
+    let arr2 = [4,8];
+
+    console.log("concat", arr1.concat(arr2));
+    console.log('[...arr1,...arr2] :', [...arr1,...arr2]); // 等价于 concat
+    //  因为...会将数组内的元素拆解，此时再在被拆解的元素外嵌套一层数组符号，就相当于“数组的解构合并”=concat
+
+    var [x, ...y] = [4,8,10,30];
+    console.log(y); // 此时y = [8,10,30]，也就是说y此时变为动态数组，这也是解构复制的特性
+
+    let [a,b,c] ="ES6";
+    console.log(a,b,c); // 即使是字符串，依然可以解构
+
+    let xy = [...'ES6'];
+    console.log(xy); // ...就是能够硬拆解（因为...是运算符！）优先级高,所以它会先拆解，再被[]初始化
+    // xy = ["E", "S"，"6"]
+
+  </script>
+</body>
+</html>
