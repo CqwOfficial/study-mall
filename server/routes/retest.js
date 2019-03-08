@@ -3,14 +3,8 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var Retests = require('../models/retest');
-//创建application/json解析
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
 
-//创建application/x-www-form-urlencoded
-var urlencodedParser = bodyParser.urlencoded({extended: false});
-
-mongoose.connect('mongodb://admin:admin@127.0.0.1:27017/testone',{useNewUrlParser:true});
+mongoose.connect('mongodb://testone:123456@127.0.0.1:27017/testone',{useNewUrlParser:true});
 mongoose.connection.on("connected", ()=>{
   console.log("success mongo")
 });
@@ -21,7 +15,7 @@ mongoose.connection.on("disconnected", ()=>{
   console.log("disconnected mongo")
 });
 
-router.get('/', function(req, res, next) {
+router.get('/list', function(req, res, next) {
   
 
   let page = parseInt(req.param("page")); // req.param 获取值
@@ -72,12 +66,66 @@ router.get('/', function(req, res, next) {
 });
 
 // 加入购物车
-router.get("/addCart",urlencodedParser,function(req,res,next){
-  res.send('nihao')
-})
-// router.post("/ee",jsonParser,function(req,res,next){
-//   res.send('nihao')
-// })
+router.post("/addCart", function (req,res,next) {
+
+  var userId = '10001',productId = req.body.productId;
+  var User = require('../models/user');
+
+  User.findOne({userId:userId}, function (err,userDoc) {
+    if(err){
+      res.json({ status:"1", msg:err.message+'user表错误'});
+    }else{
+      console.log("userDoc:"+userDoc);
+
+      if(userDoc){
+        let goodsItem = '';
+        userDoc.cartList.forEach(function(item) {
+          if(item.productId == productId){
+            goodsItem = item;
+            if(item.productNum == "undefined"){
+              item.productNum = new Number(1);
+              item.productNum++;
+            }else{
+              item.productNum++;
+            }
+            
+          }
+        });
+      
+        if(goodsItem){
+        userDoc.save(function (err2,doc2) {
+          if(err2){ 
+            res.json({ status:"1", msg:err2 })
+          }else{
+            res.json({status:'0', msg:'', result:'成了'})
+          }
+        })
+      
+      }else{
+        Retests.findOne({productId:productId}, function (err1,doc) {
+          if(err1){
+            res.json({ status:"1", msg:err1.message+'retest表productid有问题'})
+          }else{
+            
+            if(doc){
+              doc.productNum = 1;
+              doc.checked = 1;
+              userDoc.cartList.push(doc);
+              userDoc.save(function (err2,doc2) {
+                if(err2){
+                  res.json({ status:"1", msg:err2 })
+                }else{
+                  res.json({ status:'0', msg:'',result:'第一次成了'+doc })
+                }
+              })
+            }
+          }
+        });
+      }
+    }
+    }
+  })
+});
 
 
 

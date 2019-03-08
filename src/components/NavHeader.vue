@@ -153,12 +153,13 @@
             return{
               userName:'admin',
               userPwd:'123456',
+              nickName: '',
               errorTip:false,
               loginModalFlag:false
             }
         },
         computed:{
-          ...mapState(['nickName','cartCount'])
+          ...mapState(['cartCount'])
         },
         /*nickName(){
           return this.$store.state.nickName;
@@ -171,6 +172,12 @@
         },
         methods:{
             checkLogin(){
+              axios.get("/users/checkLogin").then((response) => {
+                let res =response.data;
+                if(res.status == "0"){
+                  this.nickName = res.result;
+                }
+              });
 //                 axios.get("/users/checkLogin").then((response)=>{
 //                     var res = response.data;
 //                     var path = this.$route.pathname;
@@ -186,11 +193,11 @@
 //                 });
             },
             login(){
-                // if(!this.userName || !this.userPwd){
-                //   this.errorTip = true;
-                //   return;
-                // }
-                console.log('e')
+                if(!this.userName || !this.userPwd){
+                  this.errorTip = true;
+                  return;
+                }
+                
                 axios.post("/users/login",{
                   userName:this.userName,
                   userPwd:this.userPwd
@@ -198,11 +205,13 @@
                   let res = response.data;
                   if(res.status == "0"){
                     this.errorTip = false;
+                    this.loginModalFlag = false;
+                    this.nickName = res.result.userName;
                   }else{
                     this.errorTip = true;
                   }
                 })
-                console.log('f')
+                
                 // axios.post("/users/login",{
                 //   userName:this.userName,
                 //   userPwd:this.userPwd
@@ -219,13 +228,13 @@
                 // });
             },
             logOut(){
-//                 axios.post("/users/logout").then((response)=>{
-//                     let res = response.data;
-//                     if(res.status=="0"){
-// //                        this.nickName = '';
-//                         this.$store.commit("updateUserInfo",res.result.userName);
-//                     }
-//                 })
+                axios.post("/users/logout").then((response)=>{
+                  let res = response.data;
+                  if(res.status=="0"){
+                    this.nickName = '';
+                    // this.$store.commit("updateUserInfo",res.result.userName);
+                  }
+                })
             },
             getCartCount(){
               // axios.get("users/getCartCount").then(res=>{

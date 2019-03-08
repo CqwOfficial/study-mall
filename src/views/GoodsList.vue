@@ -7,7 +7,7 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a @click="sortGoods" href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a @click="sortGoods" href="javascript:void(0)" class="price"  >Price <svg class="icon icon-arrow-short" :class="{'sort-dd':sortFlag}"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
@@ -65,8 +65,9 @@
   import NavBread from './../components/NavBread'
   import '../assets/css/base.css'
   import '../assets/css/product.css'
-  import { getGoods } from "api"
   import axios from 'axios'
+  import { getGoods } from "api"
+  
 
   export default {
     data(){
@@ -106,15 +107,15 @@
     },
     methods:{
       addCart(productId){
-        // axios.post("/retest/addCart",{
-        //   productId:productId
-        // }).then((res)=> {
-        //   if(res.status==0){
-        //     alert("success!#@!")
-        //   }else{
-        //     alert("gunNoSuccess")
-        //   }
-        // })
+        axios.post("/retest/addCart",{
+          productId:productId
+        }).then((res)=> {
+          if(res.status==0){
+            alert("success!#@!")
+          }else{
+            alert('自己看控制台的提示吧，我接口写在helper.js里了，已经过滤掉msg信息')
+        }
+        })
       },
       setPriceFilter(index){
         thi.priceChecked = index;
@@ -175,5 +176,12 @@
 </script>
 
 <style scoped>
-
+.sort-dd{
+  transform: rotate(180deg);
+  transition: all .3s ease-in-out;
+}
+.btn :hover{
+  background-color: #e8f5ff;
+  transition: all .3s ease-out;
+}
 </style>
