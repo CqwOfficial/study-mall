@@ -4,7 +4,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Retests = require('../models/retest');
 
-mongoose.connect('mongodb://testone:123456@127.0.0.1:27017/testone',{useNewUrlParser:true});
+mongoose.connect('mongodb://mallone:123456@127.0.0.1:27017/mall',{useNewUrlParser:true});
 mongoose.connection.on("connected", ()=>{
   console.log("success mongo")
 });
@@ -82,12 +82,12 @@ router.post("/addCart", function (req,res,next) {
         userDoc.cartList.forEach(function(item) {
           if(item.productId == productId){
             goodsItem = item;
-            if(item.productNum == "undefined"){
-              item.productNum = new Number(1);
-              item.productNum++;
-            }else{
-              item.productNum++;
-            }
+            // if(item.productNum == "undefined"){
+            //   item.productNum = "1";
+            //   item.productNum++;
+            // }else{
+              item.productNum ++;
+            // }
             
           }
         });

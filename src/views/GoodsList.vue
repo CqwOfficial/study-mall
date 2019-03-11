@@ -54,6 +54,27 @@
       </div>
     </div>
     <div class="md-overlay" v-show="overLayFlag" @click.stop="closePop"></div>
+    <modal :mdShow='mdShow' @close="closeModal">
+      <p slot="message">
+        请先登录，否则无法加入到购物车！
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <modal :mdShow='mdShowCart' @close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+          </svg>
+          <span>加入购物车成!</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m" href="javascript:;" to="/cart">查看购物车</router-link>
+
+      </div>
+    </modal>
     <nav-footer></nav-footer>
     
   </div>
@@ -63,6 +84,7 @@
   import NavHeader from './../components/NavHeader'
   import NavFooter from './../components/NavFooter'
   import NavBread from './../components/NavBread'
+  import Modal from './../components/Modal'
   import '../assets/css/base.css'
   import '../assets/css/product.css'
   import axios from 'axios'
@@ -72,6 +94,8 @@
   export default {
     data(){
       return {
+        mdShow:false,
+        mdShowCart:false,
         sortFlag:1,
         url: '/static/',
         goods: [],
@@ -100,20 +124,25 @@
     components:{
       NavHeader,
       NavFooter,
-      NavBread
+      NavBread,
+      Modal
     },
     created(){
       this._getGoods();
     },
     methods:{
+      closeModal(){
+        this.mdShow = false;
+      },
       addCart(productId){
         axios.post("/retest/addCart",{
           productId:productId
         }).then((res)=> {
-          if(res.status==0){
-            alert("success!#@!")
+          if(res.data.status==0){
+            this.mdShowCart = true;
           }else{
-            alert('自己看控制台的提示吧，我接口写在helper.js里了，已经过滤掉msg信息')
+            console.log(res)
+            this.mdShow = true;
         }
         })
       },

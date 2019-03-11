@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var Goods = require('../models/goods');
 
 // 连接mongo数据库
-mongoose.connect('mongodb://testone:123456@127.0.0.1:27017/testone',{useNewUrlParser:true});
+mongoose.connect('mongodb://mallone:123456@127.0.0.1:27017/mall',{useNewUrlParser:true});
 mongoose.connection.on("connected", ()=>{
   console.log("success mongo")
 });

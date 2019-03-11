@@ -7,6 +7,8 @@ var produtSchema2 = new Schema1({
   "productName" : String,
   "productPrice" : Number,
   "productImage" : String,
+  "checked":String,
+  "productNum":Number,
 });
 
 module.exports = mongoose.model('retest',produtSchema2);
