@@ -140,6 +140,7 @@
         }).then((res)=> {
           if(res.data.status==0){
             this.mdShowCart = true;
+            this.$store.commit("updateCartCount",1);
           }else{
             console.log(res)
             this.mdShow = true;

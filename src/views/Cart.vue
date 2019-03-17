@@ -76,7 +76,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">{{item.productPrice}}</div>
+                  <div class="item-price">{{item.productPrice | currency('$')}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
@@ -90,11 +90,11 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{item.productNum*item.productPrice}}</div>
+                  <div class="item-price-total">{{(item.productNum*item.productPrice) | currency('$')}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
-                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId)">
+                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item)">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
                       </svg>
@@ -109,8 +109,8 @@
           <div class="cart-foot-inner">
             <div class="cart-foot-l">
               <div class="item-all-check">
-                <a href="javascipt:;" >
-                  <span class="checkbox-btn item-check-btn" >
+                <a href="javascipt:;" @click="toggleCheckAll">
+                  <span class="checkbox-btn item-check-btn" :class="{'check':checkAllFlag}">
                       <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                   </span>
                   <span>Select all</span>
@@ -119,10 +119,10 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price"></span>
+                Item total: <span class="total-price">{{totalPrice | currency('$')}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red" >Checkout</a>
+                <a class="btn btn--red" :class="{'btn--dis': checkedCount==0}" @click="checkOut">Checkout</a>
               </div>
             </div>
           </div>
@@ -169,20 +169,45 @@ import NavHeader from './../components/NavHeader'
 import NavFooter from './../components/NavFooter'
 import NavBread from './../components/NavBread'
 import Modal from './../components/Modal'
-// import {currency} from './../util/currency'
 import axios from 'axios'
+// import {currency} from './../util/currency'
 export default {
   name: '',
   props: {},
   data() {
     return {
       productId: "",
+      delItem:[],
       modalConfirm: false,
+      // checkAllFlag:false,
       cartList:[]
     }
   },
+  filters:{
+    // currency: currency
+  },
   computed: {
-    
+    checkAllFlag(){
+      return this.checkedCount == this.cartList.length;
+    },
+    checkedCount(){
+      var i =0;
+      this.cartList.forEach((item)=>{
+        if(item.checked == '1'){
+          i++;
+        }
+      })
+      return i;
+    },
+    totalPrice(){
+      var money = 0;
+      this.cartList.forEach((item)=>{
+        if(item.checked =='1'){
+          money += parseFloat(item.productPrice)*parseInt(item.productNum);
+        }
+      })
+      return money;
+    }
   },
   create() {
     
@@ -197,10 +222,17 @@ export default {
         this.cartList = res.result;
       })
     },
+    checkOut(){
+      if(this.checkedCount>0){
+        this.$router.push({
+          path:"/address"
+        });
+      }
+    },
     editCart(flag,item){
       if(flag == "add"){
         item.productNum++;
-      }else if(flag=='minus'){
+      }else if(flag=='minu'){
         if(item.productNum<=1){
           return;
         }
@@ -214,25 +246,48 @@ export default {
         checked:item.checked
       }).then((response)=>{
         let res = response.data;
+        let num = 0;
+        if(flag=="add"){
+          num = 1;
+        }else if(flag=="minu"){
+          num = -1;
+        }
+        this.$store.commit("updateCartCount", num);
       })
     },
-    delCartConfirm(productId){
-      this.productId = productId;
+    delCartConfirm(item){
+      this.delItem = item;
       this.modalConfirm = true;
     },
     delCart(){
       axios.post("/users/cart/del",{
-        productId:this.productId
+        productId:this.delItem.productId
       }).then((response) =>{
         let res = response.data;
         if(res.status == '0'){
           this.modalConfirm = false;
           this.init();
+
+          this.$store.commit("updateCartCount", -this.delItem.productNum);
         }
       })
     },
     closeModal(){
       this.modalConfirm = false;
+    },
+    toggleCheckAll(){
+      var flag= !this.checkAllFlag;
+      this.cartList.forEach((item)=>{
+        item.checked = flag?'1':'0';
+      })
+      axios.post("/users/editCheckAll",{
+        checkAll: flag
+      }).then((response)=>{
+        let res = response.data;
+        if(res.status == '0'){
+          console.log('update suc :');
+        }
+      })
     }
   },
   components: {

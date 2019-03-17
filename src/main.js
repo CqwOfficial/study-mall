@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from './App.vue'
 import {router} from './router' // {router ：router} import实际导入形式
 import store from './store'
@@ -7,6 +8,7 @@ import * as util from './util' // 非暴露形式引入
 
 import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
+import {currency} from './util/currency'
 
 import test from '@/components/test/index'
 
@@ -15,6 +17,9 @@ console.log(`minus:${util.minus(10,2)}`); // 非暴露形式调用
 
 Vue.config.productionTip = false
 
+Vue.use(Vuex);
+Vue.filter("currency",currency);
+
 Vue.use(infiniteScroll)
 
 Vue.use(VueLazyLoad,{
@@ -22,8 +27,6 @@ Vue.use(VueLazyLoad,{
 })
 
 Vue.use(test)
-// console.log(`sum:${sum(1,6)}`); // 暴露形式调用
-// console.log('minus :', minus(10,2)); // 暴露形式调用
 
 new Vue({
   router,
